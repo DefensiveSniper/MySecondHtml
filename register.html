@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register</title>
+        <meta charset="utf-8">
+        <link rel="icon" href="https://s1.ax1x.com/2022/11/11/zCjEVS.jpg" type="image/x-icon" />
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body class="background">
+        <div class="mainBox">
+            <h1>Register</h1>
+            <br><br>
+            <div class="Box1">
+                <div class="BoxBorder">
+                    <input type="text" name="username" placeholder="username" autocomplete="false">
+                </div>
+                <br>
+                <div class="BoxBorder">
+                    <input type="password" name="password" placeholder="password" autocomplete="false">
+                </div>
+                <br>
+                <div class="BoxBorder buttonBox">
+                    <button onclick="mYRegister()">Register</button>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            //获取admin.json文件
+            var admin = new XMLHttpRequest();
+            admin.open("GET","admin.json",false);
+            admin.send(null);
+            var adminData = JSON.parse(admin.responseText);
+
+            //获取用户输入的用户名和密码
+            function mYRegister(){
+                var username = document.getElementsByName("username")[0].value;
+                var password = document.getElementsByName("password")[0].value;
+                //判断用户名和密码是否正确
+                if(username == "" || password == ""){
+                    alert("username or password is empty");
+                }else{
+                    for(var i=0 ; i<adminData.accounts.length ; i++){
+                        if(username == adminData.accounts[i].username){
+                            alert("username already esisted")
+                            break;
+                        }else{
+                            if(i == adminData.accounts.length - 1){
+                                //将新用户信息添加到admin.json文件中并将新的admin.json文件保存至本地文件
+                                var newAccount = {"username":username,"password":password};
+                                adminData.accounts.push(newAccount);
+                                var newAdmin = JSON.stringify(adminData);
+                                var newAdminFile = new XMLHttpRequest();
+                                newAdminFile.open("POST","admin.json",false);
+                                newAdminFile.send(newAdmin);
+
+                                //提示注册成功
+                                alert("register success");
+
+                                //跳转到登录页面
+                                window.location.href = "login.html";
+                                break;
+                            }
+                            else
+                                continue;
+                        }
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
